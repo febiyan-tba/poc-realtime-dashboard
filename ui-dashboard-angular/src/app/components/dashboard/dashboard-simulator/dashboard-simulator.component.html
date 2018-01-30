@@ -1,0 +1,5 @@
+<form [formGroup]="simulationForm">
+  <h3>Data Feed Simulation</h3>
+  <button mat-raised-button style="width: 100%" (click)="startSimulation()" *ngIf="!isSimulating">Simulate</button>
+  <button mat-raised-button style="width: 100%" (click)="stopSimulation()" *ngIf="isSimulating">Stop</button>
+</form>

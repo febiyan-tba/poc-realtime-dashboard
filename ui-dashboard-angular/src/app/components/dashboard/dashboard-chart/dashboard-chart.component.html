@@ -1,0 +1,18 @@
+<div style="height:400px">
+  <h5>Sales Distribution of Category</h5>
+  <ngx-charts-pie-chart 
+    style="display:flex"
+    [scheme]="colorScheme"
+    [results]="pieChartData"
+    [labels]="showLabels"
+    [doughnut]="doughnut">
+  </ngx-charts-pie-chart>
+</div>
+<div style="height:400px">
+    <h5>Sales Over Time</h5>
+  <ngx-charts-line-chart
+    style="display:flex"
+    [scheme]="colorScheme"
+    [results]="lineChartData">
+  </ngx-charts-line-chart>  
+</div>

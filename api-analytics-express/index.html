@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Socket.IO chat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font: 13px Helvetica, Arial;
+    }
+
+    form#chat {
+      background: #000;
+      padding: 3px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    form#chat input {
+      border: 0;
+      padding: 10px;
+      width: 90%;
+      margin-right: .5%;
+    }
+
+    form#chat button {
+      width: 9%;
+      background: rgb(130, 224, 255);
+      border: none;
+      padding: 10px;
+    }
+
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #messages li {
+      padding: 5px 10px;
+    }
+
+    #messages li:nth-child(odd) {
+      background: #eee;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="login" action="http://localhost:3001/tokens/" method="POST">
+    <input type="text" id="user" name="username" />
+    <input type="test" id="password" name="password" />
+    <button>Login</button>
+  </form>
+  <ul id="messages"></ul>
+  <form id="chat" action="">
+    <input id="m" autocomplete="off" />
+    <button>Send</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+    $(function () {
+      var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJGZWJpeWFuJ3MgV2ViIFNlcnZpY2UiLCJzdWIiOjEsImlhdCI6MTUxNjc4Mjc0ODMyNCwiZXhwIjoxNTE2Nzg0MTg4MzI0fQ.3B_v03ot5NHY87tF2wuGaz1p7bHz4VljKaVP25yea80";
+
+      // Get token
+      $('#login').submit(function (e) {
+        e.preventDefault();
+        $.post('http://localhost:3001/tokens/', {
+          username: $('username').val(),
+          password: $('password').val()
+        }).done(function (result) {
+          console.log(result.token);
+          token = result.token;
+        });
+      });
+
+      // This require only one roundtrip but token is exposed in the URL
+      // var socket = io.connect('', {
+      //   // Token will be presented using GET and will be visible in the URL
+      //   // HTTPs is necessary
+      //   query: 'token=' + token
+      // });
+      //// Check connection
+      // socket.on('connect', function () {
+      //   console.log('connected')
+      // }).on('disconnect', function () {
+      //   console.log('disconnected')
+      // })
+
+      // Single round trip authentication
+      var socket = io.connect('');
+      socket.on('connect', function(){
+        socket
+          .emit('authenticate', { token: token })
+          .on('authenticated', function(){
+            console.log('connected')
+          })
+          .on('unauthorized', function(msg){
+            console.log("Unauthorized: " + JSON.stringify(msg.data))
+          })
+      });
+      
+      $('#chat').submit(function () {
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+      socket.on('chat message', function (msg) {
+        console.log(msg)
+        $('#messages').append($('<li>').text(msg));
+      });
+    });
+  </script>
+</body>
+
+</html>

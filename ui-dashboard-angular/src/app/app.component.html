@@ -1,0 +1,8 @@
+<mat-toolbar color="primary">
+    <span>Real-Time Dashboard</span>
+    <span class="example-spacer"></span>
+    <!-- If authenticated -->
+    <!-- <button *ngIf="authService.isLoggedIn()" mat-button routerLink="/dashboard">Dashboard</button> -->
+    <button *ngIf="authService.isLoggedIn()" mat-button (click)="logout()">Logout</button>
+</mat-toolbar>
+<router-outlet></router-outlet>
