@@ -1,27 +1,42 @@
-# UiDashboardAngular
+# Realtime Dashboard
+This project aims to technically showcase that it is possible to link up different technologies to build a realtime dashboard to show analysis results. This is also my playground to learn about them. 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.8.
+The technologies/tools/libraries/frameworks that will be involved are:
+- Web Development: Angular, Angular Material, Socket.io, Express, JWT authentication. (SocketCluster and Vue.js later since they look more promising)
+- Distributed Streaming Platform: Apache Kafka
+- Distributed Data Processing: Apache Spark
 
-## Development server
+## Current Features
+It has been quite a while since the last time I did web development (5 years!!) so it took some time to get up and running. The current features of this project are:
+- Authentication using JWT to improve authentication approach and better support for non-browser clients. The user store is still mocked using a list of users in JSON format.
+- Separation of authentication service and the analytics service. The purpose it to let them scale independently later on.
+- Angular Material and Ngx Charts for a good user interface and easy visualisation update on data changes.
+- Realtime WebSockets using Socket.io for realtime UI updates. It also has been secured using JWT for a secure access.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Future Features 
+- API services connected to Kafka to push data
+- Kafka connected to Spark to process aggregations
+- Multiple metrics or data sets
+- Dockerization of services
 
-## Code scaffolding
+## Stretch goal: 
+- Authentication against a database + role-based access.
+- Serve a prediction service and use the dashboard to display prediction results. I'm still trying to figure out the recommended approach.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## How to Use
+Since most of the services/apps now are using Node.JS, do `npm install` in most subprojects and use `PORT=XXXX nodemon`, `node app.js`, or `ng serve` to start the apps.
 
-## Build
+## Project/Subproject Naming Convention
+The naming convention is as follows:
+[module-name/project-name]-component-function-[version]-[technology]
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Examples:
+- api-auth-express
+- api-auth-restify
+- api-analytics-0.1
+- api-socket-0.7-socketcluster
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Other example with example projects:
+- shell-oilwell-predictions/stream-messaging-0.3-kafka
+- walmart-store-analysis/stream-analytics-0.1-spark
+- poc-project-name/api-socket-0.1-socketcluster
