@@ -1,5 +1,5 @@
 # Realtime Dashboard
-This project aims to technically showcase that it is possible to link up different technologies to build a realtime dashboard to show analysis results. This is also my playground to learn  
+This project aims to technically showcase that it is possible to link up different technologies to build a realtime dashboard to show analysis results. This is also my playground to learn about them. 
 
 The technologies/tools/libraries/frameworks that will be involved are:
 - Web Development: Angular, Angular Material, Socket.io, Express, JWT authentication. (SocketCluster and Vue.js later since they look more promising)
