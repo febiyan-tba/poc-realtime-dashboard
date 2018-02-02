@@ -33,7 +33,7 @@ The naming convention is as follows:
 Examples:
 - api-auth-express
 - api-auth-restify
-- api-analytics-0.1
+- ui-dashboard-0.1
 - api-socket-0.7-socketcluster
 
 Other example with example projects:
