@@ -12,12 +12,6 @@ kafkaProducer.on('error', function(){
   console.log('Kafka error');
 });
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  // Pass along to kafka
-  res.sendStatus(204);
-});
-
 /* Accept Transactions */
 router.post('/', function(req, res, next) {
   // The contain of req.body is a JSON object of the form fields.
@@ -48,10 +42,5 @@ router.post('/', function(req, res, next) {
 
   res.sendStatus(204);
 });
-router.get('/live', function(req, res, next) {
-  res.sendStatus(204);
-  //res.sendFile(path.resolve('index.html'));
-  // Send a broadcast when connection
-  
-});
+
 module.exports = router;
