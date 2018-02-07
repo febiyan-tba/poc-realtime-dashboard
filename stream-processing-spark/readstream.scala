@@ -1,44 +1,40 @@
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.spark.streaming.kafka010._
-import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
-import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
-import org.apache.spark.streaming.StreamingContext
-
 import spark.implicits._
 import org.apache.spark.sql.types._
+
 val schema = StructType(Array(
     StructField("category", StringType),
     StructField("sales", DoubleType)
 ))
 
-// Set up the connection DF
-val kafkaDF = spark
-.readStream
-.format("kafka")
-.option("kafka.bootstrap.servers", "localhost:9092")
-.option("subscribe", "transactions")
-.option("startingOffests", "latest")
-.load()
+// Set up the Kafka connection
+val kafkaDF = spark.
+    readStream.
+    format("kafka").
+    option("kafka.bootstrap.servers", "localhost:9092").
+    option("subscribe", "transactions").
+    option("startingOffests", "latest").
+    load()
 
-// import org.apache.spark.sql.functions._
-
-var streamingDF = kafkaDF.select(
-    ($"value").cast("string").alias("data"),
-    ($"hittime").cast("timestamp").alias("ts")
-)
-.as[(String, Timestamp)]
-; 
-
-var streamingWindowDF = streamingDF
-    .select(
+// Parse the received JSON data from Kafka
+var streamingDF = kafkaDF.
+    select(($"value").cast("string").alias("data")).
+    select(
+        // Category column
         get_json_object($"data", "$.category").cast("string").alias("category"),
+        // Sales (money) column
         get_json_object($"data", "$.sales").cast("double").alias("sales"),
-        "hittime"
-    )
-    .groupBy($"category", window($"hittime", "10 minute"))
-    .sum("sales");
+        // Need to divide by 1000 to convert to seconds (Javascript Date.now() outputs in milliseconds)
+        from_unixtime(get_json_object($"data", "$.ts") / 1000).cast("timestamp").alias("ts")
+    );
 
-val execution = streamingWindow.writeStream.format("console").start().awaitTermination();
+// Do a window calculation every 5 seconds
+// Tolerate late data up to 10 seconds
+var streamingWindowDF = streamingDF.
+    withWatermark("ts", "10 seconds").
+    groupBy($"category", window($"ts", "5 seconds")).
+    count();
+
+// Print to console
+val execution = streamingWindowDF.writeStream.format("console").start().awaitTermination();
 
 // df2.select(from_json($"value", schema).as("data")).writeStream.format("console").start().awaitTermination()

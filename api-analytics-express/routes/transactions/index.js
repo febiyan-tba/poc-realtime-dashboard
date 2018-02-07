@@ -17,6 +17,7 @@ router.post('/', function(req, res, next) {
   // The contain of req.body is a JSON object of the form fields.
   // Numeric values are converted to strings automatically
   const obj = {
+    'ts': Date.now(),
     'category': req.body['Product Category'],
     'sales': req.body['Sales']
   };
