@@ -12,8 +12,33 @@ val schema = StructType(Array(
     StructField("sales", DoubleType)
 ))
 
-val df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "localhost:9092").option("subscribe", "transactions").load()
+// Set up the connection DF
+val kafkaDF = spark
+.readStream
+.format("kafka")
+.option("kafka.bootstrap.servers", "localhost:9092")
+.option("subscribe", "transactions")
+.option("startingOffests", "latest")
+.load()
 
-var df2 = df.selectExpr("CAST(value AS STRING)").as[(String)]
+// import org.apache.spark.sql.functions._
 
-df2.select(from_json($"value", schema).as("data")).writeStream.format("console").start().awaitTermination()
+var streamingDF = kafkaDF.select(
+    ($"value").cast("string").alias("data"),
+    ($"hittime").cast("timestamp").alias("ts")
+)
+.as[(String, Timestamp)]
+; 
+
+var streamingWindowDF = streamingDF
+    .select(
+        get_json_object($"data", "$.category").cast("string").alias("category"),
+        get_json_object($"data", "$.sales").cast("double").alias("sales"),
+        "hittime"
+    )
+    .groupBy($"category", window($"hittime", "10 minute"))
+    .sum("sales");
+
+val execution = streamingWindow.writeStream.format("console").start().awaitTermination();
+
+// df2.select(from_json($"value", schema).as("data")).writeStream.format("console").start().awaitTermination()
