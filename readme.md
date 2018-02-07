@@ -13,7 +13,7 @@ It has been quite a while since the last time I did web development (5 years!!) 
 - - The user store is still mocked using a list of users in JSON format.
 - Separation of authentication service and the analytics service. The purpose it to let them scale independently later on.
 - Angular Material and Ngx Charts for good user interface and easy visualisation update on data changes.
-- Realtime WebSockets using Socket.io for realtime UI updates. The access to it has  also been secured using JWT .
+- Realtime WebSockets using Socket.io for realtime UI updates. The access to it has  also been secured using JWT.
 - API services connected to Kafka to push data (unsecured)
 - Local Spark connected to dockerized Kafka.
 
@@ -42,14 +42,14 @@ The Kafka service needs to be started before the analytics API since it depends 
 There are 2 APIs: Authentication and Analytics. Both are developed using ExpressJS and are in and api-auth-express and api-analytics-express respectively. Make sure you have NodeJS and NPM installed before you do the following
 
 Go to the `api-auth-express` folder and start the service (will be on port :3001)
-`cd api-auth-express`
-`npm install`
-`PORT=3001 nodemon`
+- `cd api-auth-express`
+- `npm install`
+- `PORT=3001 nodemon`
 
 Open a new terminal, go to the `api-analytics-express` folder, and start the service (will be on port :3000)
-`cd api-analytics-express`
-`npm install`
-`PORT=3000 nodemon`
+- `cd api-analytics-express`
+- `npm install`
+- `PORT=3000 nodemon`
 
 ### Start UI Services
 Open a new terminal, go to the `ui-dashboard-angular` and start the service (will be on port :4200)
