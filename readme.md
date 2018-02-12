@@ -3,7 +3,7 @@ This is my playground to learn about streaming technologies.  This bench project
 
 The technologies/tools/libraries/frameworks that will be involved are:
 - Web Development: Angular, Angular Material, Socket.io, Express, JWT authentication. 
-- - (Will try SocketCluster and Vue.js later since I see them as better alternatives to Socket.io and Angular)
+
 - Distributed Streaming Platform: Apache Kafka
 - Distributed Data Processing: Apache Spark
 
@@ -11,17 +11,21 @@ The technologies/tools/libraries/frameworks that will be involved are:
 It has been quite a while since the last time I did web development (5 years!!) so it took some time to get up and running. The current features of this project are:
 - Authentication using JWT to improve authentication approach and better support for non-browser clients. 
 - - The user store is still mocked using a list of users in JSON format.
+- - Only some API endpoints are secured
 - Separation of authentication service and the analytics service. The purpose it to let them scale independently later on.
 - Angular Material and Ngx Charts for good user interface and easy visualisation update on data changes.
 - Realtime WebSockets using Socket.io for realtime UI updates. The access to it has  also been secured using JWT.
 - API services connected to Kafka to push data (unsecured)
-- Local Spark connected to dockerized Kafka.
+- Local Spark connected to dockerized Kafka
+- A relay service to relay Kafka messages to analytics (and eventually to UI through websockets)
 
-## Future Features 
+## Stretch Goals 
+- UI using Teradata Covalent
+- UI using Vue.JS
+- Websockets using SocketCluste
 - Multiple metrics or data sets
 - Dockerization of services
-
-## Stretch goal: 
+- Separation of Websocket layer
 - Authentication against a database + role-based access.
 - Create a simple prediction model, serve a prediction service and use the dashboard to display prediction results.
 

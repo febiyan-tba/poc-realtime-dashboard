@@ -18,6 +18,15 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
 
+  // Line Chart
+  showXAxis = true;
+  showYAxis = true;
+  gradient = false;
+  showXAxisLabel = true;
+  xAxisLabel = 'Window Start';
+  showYAxisLabel = true;
+  yAxisLabel = 'Sales';
+
   // NgxCharts chart data
   pieChartData = [];
   lineChartData = [];
@@ -28,6 +37,7 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.connection = this.socketService.getTransactionSummary().subscribe(transaction => {
+      console.log(transaction);
       this.updatePieChart(transaction);
       this.updateLineChart(transaction);
     });
@@ -38,38 +48,37 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
   }
 
   updatePieChart(transaction) {
-    const categoryIndex = _.findIndex(this.pieChartData, { 'name' : transaction['category'] });
+    const categoryIndex = _.findIndex(this.pieChartData, { 'name' : transaction.category });
     if (categoryIndex !== -1) {
-      this.pieChartData[categoryIndex].value += transaction['sales'];
+      this.pieChartData[categoryIndex].value += transaction.sum_sales;
     } else {
       this.pieChartData.push({
-        'name': transaction['category'],
-        'value': +transaction['sales']
+        'name': transaction.category,
+        'value': + transaction.sum_sales
       });
     }
     this.pieChartData = [...this.pieChartData];
   }
 
   updateLineChart(transaction) {
-    const date = new Date();
-    const timeString = date.getMinutes().toString().padStart(2, '0') + date.getSeconds().toString().padStart(2, '0');
+    // The category index will be the start
     const categoryIndex = _.findIndex(this.lineChartData, { 'name' : transaction['category'] });
     if (categoryIndex !== -1) {
-      const seriesIndex = _.findIndex(this.lineChartData['series'], { 'name' : timeString });
+      const seriesIndex = _.findIndex(this.lineChartData['series'], { 'name' : transaction['window']['start'] });
       if (seriesIndex !== -1) {
-        this.lineChartData[categoryIndex]['series'][seriesIndex]['value'] += transaction['sales'];
+        this.lineChartData[categoryIndex]['series'][seriesIndex]['value'] = transaction['sum_sales'];
       } else {
         this.lineChartData[categoryIndex]['series'].push({
-          'name': timeString,
-          'value': +transaction['sales']
+          'name': transaction['window']['start'],
+          'value': +transaction['sum_sales']
         });
       }
     } else {
       this.lineChartData.push({
         'name': transaction['category'],
         'series': [{
-          'name': timeString,
-          'value': +transaction['sales']
+          'name': transaction['window']['start'],
+          'value': +transaction['sum_sales']
         }]
       });
     }

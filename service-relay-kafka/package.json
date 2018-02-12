@@ -1,0 +1,15 @@
+{
+  "name": "service-relay-kafka",
+  "version": "1.0.0",
+  "description": "A service that consumes and relays data from Kafka to the Analytics Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Febiyan Rachman",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "kafka-node": "^2.4.1"
+  }
+}

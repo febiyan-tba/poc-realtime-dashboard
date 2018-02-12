@@ -6,6 +6,7 @@ import org.apache.spark.sql.types._
 val kafkaDF = spark.
     readStream.
     format("kafka").
+    option("failOnDataLoss", false).
     option("kafka.bootstrap.servers", "localhost:9092").
     option("subscribe", "transactions").
     option("startingOffests", "latest").
@@ -33,9 +34,13 @@ var streamingWindowDS = streamingDF.
         // group by 4 seconds window, calculate every 2 seconds
         window($"ts", "4 seconds")
     ).
-    agg(
-        expr("sum(sales) as running_sum_sales")
-    )
+    agg(expr("sum(sales) as sum_sales")).
+    select(to_json(struct($"category", $"window", $"sum_sales")).alias("value"))
+
+// If not converted to JSON
+// Error found: org.apache.spark.sql.AnalysisException: value attribute type must be a String or BinaryType;
+// Error found: org.apache.spark.sql.AnalysisException: Required attribute 'value' not found;
+
 
 /*
 // For debugging purposes from spark-shell only
@@ -51,8 +56,9 @@ var queryConsole = streamingWindowDS.
 var query = streamingWindowDS.
     writeStream.
     format("kafka").
+    option("checkpointLocation", "/Users/fr186005").
     option("kafka.bootstrap.servers", "localhost:9092").
-    option("topic", "aggregations").
+    option("topic", "transactions-summary").
     start
 
 
@@ -86,7 +92,7 @@ class  KafkaSink(topic:String, servers:String) extends org.apache.spark.sql.Fore
     }
 }
 
-val topic = "aggregations"
+val topic = "transactions-summary"
 val brokers = "localhost:9092"
 val writer = new KafkaSink(topic, brokers)
 

@@ -16,20 +16,20 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on: 
       - zookeeper
-  spark-master:
-    image: bde2020/spark-master
-    ports:
-      - "8080:8080"
-      - "7077:7077"
-    environment:
-      - INIT_DAEMON_STEP=setup_spark
-      - "constraint:node==spark-master"
-  spark-worker:
-    image: bde2020/spark-worker
-    ports:
-      - "8081:8081"
-    environment:
-      - "SPARK_MASTER=spark://spark-master:7077"
-      - "constraint:node==spark-master"
-    depends_on:
-      - spark-master
+  # spark-master:
+  #   image: bde2020/spark-master
+  #   ports:
+  #     - "8080:8080"
+  #     - "7077:7077"
+  #   environment:
+  #     - INIT_DAEMON_STEP=setup_spark
+  #     - "constraint:node==spark-master"
+  # spark-worker:
+  #   image: bde2020/spark-worker
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - "SPARK_MASTER=spark://spark-master:7077"
+  #     - "constraint:node==spark-master"
+  #   depends_on:
+  #     - spark-master
